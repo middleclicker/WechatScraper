@@ -2,6 +2,8 @@ import csv
 import os
 import re
 import datetime
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
 
 folder_path = os.getcwd()
 data = []
@@ -24,13 +26,19 @@ for message in data:
         daily_msg[author][date] += 1
 
 # Total messages per person
+all_word_freq = {}
 overall_msg = {}
 for message in data:
     author = message[2]
+    msg = message[3]
     if author not in overall_msg:
         overall_msg[author] = 1
     else:
         overall_msg[author] += 1
+    if msg not in all_word_freq:
+        all_word_freq[msg] = 1
+    else:
+        all_word_freq[msg] += 1
 
 # Avg msg per day
 daily_avg_msg = {}
@@ -148,7 +156,7 @@ for i in range(len(data)-1, -1, -1):
 avg_reply_time = {}
 replied_msg = {}
 lastMsgAuthor = data[0][2]
-lastMsgTime = datetime.datetime.strptime(data[0][1], "%H:%M:%S").time()
+
 for message in data:
     time = message[1]
     author = message[2]
@@ -201,7 +209,10 @@ with open("data/daily_msg.csv", 'w', encoding='utf-8-sig', newline='') as file:
         date_list = []
         for person in people:
             date_list.append(x)
-            date_list.append(person[x])
+            try:
+                date_list.append(person[x])
+            except KeyError as k:
+                print(k)
         proc_msg.append(date_list)
 
     for row in proc_msg:
@@ -290,8 +301,15 @@ with open("data/avg_hourly_msg.csv", 'w', encoding='utf-8-sig', newline='') as f
     for row in proc_msg:
         writer.writerow(row)
 
+wordcloud = WordCloud(width=1600, height=800, font_path='HanyiSentyRubber.ttf', colormap='winter',relative_scaling = 0.69,min_font_size=10, background_color="white").generate_from_frequencies(first_msg_contents)
+wordcloud.to_file("data/first_msg_contents.png")
+
+wordcloud = WordCloud(width=1600, height=800, font_path='HanyiSentyRubber.ttf', colormap='winter',relative_scaling = 0.69,min_font_size=10,background_color="white").generate_from_frequencies(all_word_freq)
+wordcloud.to_file("data/all_msg_contents.png")
+
 #print(daily_msg)
 #print(overall_msg)
+#print(all_word_freq)
 #print(daily_avg_msg)
 #print(avg_words_per_msg)
 #print(total_photos)

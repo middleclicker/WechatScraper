@@ -8,7 +8,7 @@ import csv
 
 # Variables
 CHATNAME = "小狐狸🦊"
-SCROLLS = 50
+SCROLLS = 5000
 
 # Classes
 class RawMessage:
@@ -90,6 +90,7 @@ all_msg = []
 for cycle in range(0, SCROLLS):
     chats = chat_win.wrapper_object().descendants()
     cur_cycle = []
+    print(f"Collected {len(all_msg)} (raw) messages")
     for message in chats:
         classname = message.friendly_class_name()
         if (classname == "ListItem"):
@@ -134,8 +135,13 @@ proc_msg = []
 for msg in all_msg:
     time = msg.time
     date = weekdays.get(time) # Change chinese weekname to date object
+    #print(time)
+    #print(type(time))
     if date is not None: # e.g. "昨天"
         proc_msg.append(Message(date, "NA", msg.author, msg.msg))
+    elif '/' in time: # Normal date, e.g. "22/03/05"
+        date_format = "%y/%m/%d"
+        proc_msg.append(Message(datetime.datetime.strptime(time, date_format), "NA", msg.author, msg.msg))
     elif type(time) == str: # e.g. "12:03 pm"
         hour, minute = time.split(' ')[0].split(':')
         hour = int(hour)
@@ -143,8 +149,6 @@ for msg in all_msg:
         if time.split(' ')[1] == "pm" and hour != 12:
             hour += 12
         proc_msg.append(Message(current_date, datetime.time(hour, minute, 0), msg.author, msg.msg))
-    else: # Normal date, e.g. "22/03/05"
-        proc_msg.append(Message(time, "NA", msg.author, msg.msg))
 
 # Export
 filename = f"{datetime.datetime.now().strftime('%y-%m-%d %H-%M-%S')}.csv" # "23-05-19 18-27-45.csv"
