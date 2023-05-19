@@ -147,7 +147,7 @@ for msg in all_msg:
         proc_msg.append(Message(time, "NA", msg.author, msg.msg))
 
 # Export
-filename = 'output.csv'
+filename = f"{datetime.datetime.now().strftime('%y-%m-%d %H-%M-%S')}.csv" # "23-05-19 18-27-45.csv"
 
 with open(filename, 'w', encoding='utf-8-sig', newline='') as file:
     writer = csv.writer(file)
