@@ -2,8 +2,10 @@ import csv
 import os
 import re
 import datetime
+import random
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
+import plotly.graph_objects as go
 
 folder_path = os.getcwd()
 data = []
@@ -306,6 +308,44 @@ wordcloud.to_file("data/first_msg_contents.png")
 
 wordcloud = WordCloud(width=1600, height=800, font_path='HanyiSentyRubber.ttf', colormap='winter',relative_scaling = 0.69,min_font_size=10,background_color="white").generate_from_frequencies(all_word_freq)
 wordcloud.to_file("data/all_msg_contents.png")
+
+color_scheme = ["#003f5c","#bc5090","#ffa600", "#58508d"]
+total_daily_messages_tracedata = []
+for u in users:
+    trace = go.Bar(
+        x=list(daily_msg[u].keys()),
+        y=list(daily_msg[u].values()),
+        name=f'by {u}',
+        marker=dict(
+            color=random.choice(color_scheme),
+            )
+    )
+    total_daily_messages_tracedata.append(trace)
+
+total_daily_messages = go.Figure(
+    data=total_daily_messages_tracedata,
+    layout_title_text="Total Daily Messages"
+)
+
+monthly_first_msg_tracedata = []
+for u in users:
+    trace = go.Bar(
+        x=list(monthly_first_msg[u].keys()),
+        y=list(monthly_first_msg[u].values()),
+        name=f'by {u}',
+        marker=dict(
+            color=random.choice(color_scheme),
+            )
+    )
+    monthly_first_msg_tracedata.append(trace)
+
+monthly_first_message = go.Figure(
+    data=monthly_first_msg_tracedata,
+    layout_title_text="Monthly First Message"
+)
+
+total_daily_messages.show()
+monthly_first_message.show()
 
 #print(daily_msg)
 #print(overall_msg)
