@@ -8,7 +8,7 @@ import csv
 
 # Variables
 CHATNAME = "小狐狸🦊"
-SCROLLS = 5000
+SCROLLS = 500
 
 # Classes
 class RawMessage:

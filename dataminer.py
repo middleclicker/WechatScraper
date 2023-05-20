@@ -134,7 +134,7 @@ for i in range(len(data)-1, -1, -1):
     date = message[0]
     month = int(date.split('-')[1])
     author = message[2]
-    msg = message[3]
+    msg = ' '.join(message[3].splitlines())
     if date not in first_msg:
         first_msg[date] = author
         if author in total_first_msg:
@@ -303,10 +303,10 @@ with open("data/avg_hourly_msg.csv", 'w', encoding='utf-8-sig', newline='') as f
     for row in proc_msg:
         writer.writerow(row)
 
-wordcloud = WordCloud(width=1600, height=800, font_path='HanyiSentyRubber.ttf', colormap='winter',relative_scaling = 0.69,min_font_size=10, background_color="white").generate_from_frequencies(first_msg_contents)
+wordcloud = WordCloud(width=1600, height=800, font_path='HanyiSentyRubber.ttf',relative_scaling = 0.69, colormap='winter',min_font_size=10, background_color="white").generate_from_frequencies(first_msg_contents)
 wordcloud.to_file("data/first_msg_contents.png")
 
-wordcloud = WordCloud(width=1600, height=800, font_path='HanyiSentyRubber.ttf', colormap='winter',relative_scaling = 0.69,min_font_size=10,background_color="white").generate_from_frequencies(all_word_freq)
+wordcloud = WordCloud(width=1600, height=800, font_path='HanyiSentyRubber.ttf', colormap='winter',min_font_size=7,background_color="white").generate_from_frequencies(all_word_freq)
 wordcloud.to_file("data/all_msg_contents.png")
 
 color_scheme = ["#003f5c","#bc5090","#ffa600", "#58508d"]
