@@ -2,6 +2,9 @@
 
 Wechat Scraper is a tool for collecting and analyzing your Wechat chat history. Windows only.
 
+## Project Status
+I'll finish it after the exams lol
+
 ## Installation
 
 Wechat Scraper runs with the following dependencies
