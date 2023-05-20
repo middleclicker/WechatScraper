@@ -242,7 +242,7 @@ with open("data/overall_msg.csv", 'w', encoding='utf-8-sig', newline='') as file
     proc_msg.append(msg_per_day)
 
     awpm = []
-    awpm.append("Msg/Day")
+    awpm.append("Words/Msg")
     for x in list(avg_words_per_msg.values()):
         awpm.append(x)
     proc_msg.append(awpm)
