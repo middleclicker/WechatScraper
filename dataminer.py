@@ -276,7 +276,7 @@ with open("data/total_hourly_msg.csv", 'w', encoding='utf-8-sig', newline='') as
     for x in list(people[0].keys()):
         time_list = []
         time_list.append(x)
-        for person in people:
+        for person in total_hourly_msg:
             time_list.append(person[x])
         proc_msg.append(time_list)
 
