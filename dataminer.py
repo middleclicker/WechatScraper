@@ -193,7 +193,7 @@ for person in avg_reply_time:
 # I will figure this out someday...
 
 
-print("----")
+#print("----")
 if not os.path.isdir("data"):
     os.mkdir("data")
 
@@ -214,7 +214,8 @@ with open("data/daily_msg.csv", 'w', encoding='utf-8-sig', newline='') as file:
             try:
                 date_list.append(person[x])
             except KeyError as k:
-                print(k)
+                #print(k)
+                pass
         proc_msg.append(date_list)
 
     for row in proc_msg:
@@ -303,23 +304,85 @@ with open("data/avg_hourly_msg.csv", 'w', encoding='utf-8-sig', newline='') as f
     for row in proc_msg:
         writer.writerow(row)
 
-wordcloud = WordCloud(width=1600, height=800, font_path='HanyiSentyRubber.ttf',relative_scaling = 0.69, colormap='winter',min_font_size=10, background_color="white").generate_from_frequencies(first_msg_contents)
+with open("data/first_msg_contents.csv", 'w', encoding='utf-8-sig', newline='') as file:
+    writer = csv.writer(file)
+    headers = ["Phrase", "Frequency"]
+    writer.writerow(headers)
+    for row in first_msg_contents:
+        writer.writerow(row)
+
+with open("data/all_word_freq.csv", 'w', encoding='utf-8-sig', newline='') as file:
+    writer = csv.writer(file)
+    headers = ["Phrase", "Frequency"]
+    writer.writerow(headers)
+    for row in all_word_freq:
+        # print(row)
+        writer.writerow([row, all_word_freq[row]])
+
+
+stop = ["动画表情", "图片"] # I will implement this later
+
+wordcloud = WordCloud(width=3840, height=2160, font_path='HanyiSentyRubber.ttf', colormap='winter', background_color="white").generate_from_frequencies(first_msg_contents)
 wordcloud.to_file("data/first_msg_contents.png")
 
-wordcloud = WordCloud(width=1600, height=800, font_path='HanyiSentyRubber.ttf', colormap='winter',min_font_size=7,background_color="white").generate_from_frequencies(all_word_freq)
+wordcloud = WordCloud(width=3840, height=2160, font_path='HanyiSentyRubber.ttf', colormap='winter',background_color="white").generate_from_frequencies(all_word_freq)
 wordcloud.to_file("data/all_msg_contents.png")
 
-color_scheme = ["#003f5c","#bc5090","#ffa600", "#58508d"]
+from heapq import nlargest
+
+color_scheme = ["#fd7f6f", "#7eb0d5", "#b2e061", "#bd7ebe", "#ffb55a", "#ffee65", "#beb9db", "#fdcce5", "#8bd3c7"]
+all_word_freq_tracedata = []
+most_frequent_words = nlargest(50, all_word_freq, key=all_word_freq.get)
+word_freq = []
+for word in most_frequent_words:
+    word_freq.append(all_word_freq[word])
+
+all_word_freq_trace = go.Bar(
+    x=list(most_frequent_words),
+    y=list(word_freq),
+    marker=dict(
+        color=random.choice(color_scheme),
+        )
+)
+all_word_freq_tracedata.append(all_word_freq_trace)
+
+all_word_freq_bar = go.Figure(
+    data=all_word_freq_tracedata,
+    layout_title_text="All word frequency"
+)
+
+first_word_freq_tracedata = []
+most_frequent_words = nlargest(50, first_msg_contents, key=first_msg_contents.get)
+word_freq = []
+for word in most_frequent_words:
+    word_freq.append(first_msg_contents[word])
+
+first_word_freq_trace = go.Bar(
+    x=list(most_frequent_words),
+    y=list(word_freq),
+    marker=dict(
+        color=random.choice(color_scheme),
+        )
+)
+first_word_freq_tracedata.append(first_word_freq_trace)
+
+first_word_freq_bar = go.Figure(
+    data=first_word_freq_tracedata,
+    layout_title_text="First message word frequency"
+)
+
 total_daily_messages_tracedata = []
 for u in users:
+    c = random.choice(color_scheme)
     trace = go.Bar(
         x=list(daily_msg[u].keys()),
         y=list(daily_msg[u].values()),
         name=f'by {u}',
         marker=dict(
-            color=random.choice(color_scheme),
+            color=c,
             )
     )
+    color_scheme.remove(c)
     total_daily_messages_tracedata.append(trace)
 
 total_daily_messages = go.Figure(
@@ -327,16 +390,22 @@ total_daily_messages = go.Figure(
     layout_title_text="Total Daily Messages"
 )
 
+color_scheme = ["#003f5c","#58508d","#bc5090", "#ff6361", "#ffa600"]
 monthly_first_msg_tracedata = []
+#print(monthly_first_msg)
 for u in users:
+    if u not in monthly_first_msg:
+        continue
+    c = random.choice(color_scheme)
     trace = go.Bar(
         x=list(monthly_first_msg[u].keys()),
         y=list(monthly_first_msg[u].values()),
         name=f'by {u}',
         marker=dict(
-            color=random.choice(color_scheme),
+            color=c,
             )
     )
+    color_scheme.remove(c)
     monthly_first_msg_tracedata.append(trace)
 
 monthly_first_message = go.Figure(
@@ -344,6 +413,8 @@ monthly_first_message = go.Figure(
     layout_title_text="Monthly First Message"
 )
 
+all_word_freq_bar.show()
+first_word_freq_bar.show()
 total_daily_messages.show()
 monthly_first_message.show()
 

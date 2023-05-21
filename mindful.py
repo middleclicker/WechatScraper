@@ -7,8 +7,8 @@ import datetime
 import csv
 
 # Variables
-CHATNAME = "小狐狸🦊"
-SCROLLS = 500
+CHATNAME = "死亡组（逃学失败版）"
+SCROLLS = 1000
 
 # Classes
 class RawMessage:
@@ -90,7 +90,8 @@ all_msg = []
 for cycle in range(0, SCROLLS):
     chats = chat_win.wrapper_object().descendants()
     cur_cycle = []
-    print(f"Collected {len(all_msg)} (raw) messages")
+    print(cycle)
+    # print(f"Collected {len(all_msg)} (raw) messages")
     for message in chats:
         classname = message.friendly_class_name()
         if (classname == "ListItem"):
@@ -98,7 +99,7 @@ for cycle in range(0, SCROLLS):
             cur_cycle.append(RawMessage(time, author, msg))
     all_msg.extend(cur_cycle)
     cords = chat_win.rectangle()
-    pywinauto.mouse.scroll(wheel_dist=4, coords=(cords.left+10, cords.bottom-10))
+    pywinauto.mouse.scroll(wheel_dist=5, coords=(cords.left+10, cords.bottom-10))
 
 all_msg = removeDuplicates()
 

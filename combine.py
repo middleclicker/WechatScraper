@@ -14,8 +14,6 @@ def combine_csv_files(output_file):
             for row in reader:
                 if row not in unique_records:
                     unique_records.append(row)
-                else:
-                    print(row)
 
     # Write unique records to the output file
     with open(output_file, 'w', encoding='utf-8-sig', newline='') as file:
